@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 
-import java.util.concurrent.TimeUnit;
-
 public class MainActivity extends Activity {
 
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -28,30 +26,35 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initTread();
         init();
-        startButton();
+        initTread();
+        startButtonMethod();
+        stopButtonMethod();
     }
 
     private void initTread() {
         thread = new Thread(new Runnable() {
             public void run() {
-                try {
-                    for (cnt = 0; cnt < max; cnt++) {
-                        TimeUnit.MILLISECONDS.sleep(1000);
+
+                for (cnt = 0; cnt < max; cnt++) {
+                    try {
+                        Thread.sleep(1000);
                         Log.e(LOG_TAG, toString().valueOf(cnt));
+
                         handler.post(updateProgress);
-//                        if(cnt == 4){
-//                            handler.post(changeButtonText);
-//                        }
+                        if (cnt == 4) {
+                            handler.post(changeButtonText);
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        break;
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+
                 }
             }
         });
-    }
 
+    }
 
     private void init() {
         handler = new Handler();
@@ -63,13 +66,21 @@ public class MainActivity extends Activity {
         mSwitch = findViewById(R.id.switch2);
     }
 
-
-    private void startButton() {
+    private void startButtonMethod() {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 thread.start();
-                changeText();
+            }
+        });
+    }
+
+    private void stopButtonMethod() {
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                thread.interrupt();
+
             }
         });
     }
@@ -80,23 +91,12 @@ public class MainActivity extends Activity {
         }
     };
 
-//    this is method2 for change button text
 
-//    Runnable changeButtonText = new Runnable() {
-//        @Override
-//        public void run() {
-//                startButton.setText(R.string.newStart);
-//        }
-//    };
-
-    private void changeText(){
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startButton.setText(R.string.newStart);
-            }
-        },5000);
-    }
+    Runnable changeButtonText = new Runnable() {
+        @Override
+        public void run() {
+            startButton.setText(R.string.newStart);
+        }
+    };
 }
 
