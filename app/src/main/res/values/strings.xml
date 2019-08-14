@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">RunnableExample</string>
+    <string name="startButton">Start</string>
+    <string name="stopButton">Stop</string>
+    <string name="Switch">switch</string>
+    <string name="newStart">50%</string>
+</resources>
